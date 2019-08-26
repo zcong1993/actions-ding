@@ -1,12 +1,14 @@
-name: 'Container Action Template'
-description: 'Get started with Container actions'
-author: 'GitHub'
+name: 'DingDing Notify Action'
+description: 'Send dingding simple notify message'
+author: 'zcong1993'
 inputs: 
-  myInput:
-    description: 'Input to use'
-    default: 'world'
+  dingToken:
+    description: 'DingDing bot token'
+    required: true
+  message:
+    description: 'Message to send'
+    required: true
+
 runs:
   using: 'docker'
   image: 'Dockerfile'
-  args:
-    - ${{ inputs.myInput }}

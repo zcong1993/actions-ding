@@ -1,4 +1,4 @@
-FROM alpine:3.10
+FROM appropriate/curl:latest
 
 COPY LICENSE README.md /
 
