@@ -1,6 +1,9 @@
 name: 'DingDing Notify Action'
 description: 'Send dingding simple notify message'
 author: 'zcong1993'
+branding:
+  icon: 'message-square'
+  color: 'blue'
 inputs: 
   dingToken:
     description: 'DingDing bot token'
