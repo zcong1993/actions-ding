@@ -14,10 +14,16 @@ fi
 
 url="https://oapi.dingtalk.com/robot/send?access_token=${INPUT_DINGTOKEN}"
 
+body=$(cat <<EOF
+{
+    "msgtype": "text", 
+    "text": {
+                "content": "${INPUT_MESSAGE}"
+            }
+}
+EOF
+)
+
 curl "$url" \
    -H 'Content-Type: application/json' \
-   -d "{\"msgtype\": \"text\", 
-        \"text\": {
-             \"content\": \"${INPUT_MESSAGE}\"
-        }
-      }"
+   -d "${body}"
