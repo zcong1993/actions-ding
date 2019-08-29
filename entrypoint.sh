@@ -6,24 +6,24 @@ then
     exit 1
 fi
 
-if [ -z "${INPUT_MESSAGE}" ]
+if [ -z "${INPUT_BODY}" ]
 then
-    echo "message is required!"
+    echo "body is required!"
     exit 1
 fi
 
+echo "body: $INPUT_BODY"
+
 url="https://oapi.dingtalk.com/robot/send?access_token=${INPUT_DINGTOKEN}"
 
-body=$(cat <<EOF
-{
-    "msgtype": "text", 
-    "text": {
-                "content": "${INPUT_MESSAGE}"
-            }
-}
-EOF
-)
-
-curl "$url" \
+HTTP_RESPONSE=$(curl -s --write-out "HTTPSTATUS:%{http_code}" "$url" \
    -H 'Content-Type: application/json' \
-   -d "${body}"
+   -d "${INPUT_BODY}")
+
+# extract the body
+HTTP_BODY=$(echo "$HTTP_RESPONSE" | sed -e 's/HTTPSTATUS\:.*//g')
+
+if [ ! "$HTTP_BODY" = '{"errcode":0,"errmsg":"ok"}'  ]; then
+  echo "Error Response: ${HTTP_RESPONSE}"
+  exit 1
+fi

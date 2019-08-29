@@ -8,8 +8,8 @@ inputs:
   dingToken:
     description: 'DingDing bot token'
     required: true
-  message:
-    description: 'Message to send'
+  body:
+    description: 'Post Body to send'
     required: true
 
 runs:
