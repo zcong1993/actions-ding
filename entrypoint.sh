@@ -16,6 +16,6 @@ echo "body: $INPUT_BODY"
 
 url="https://oapi.dingtalk.com/robot/send?access_token=${INPUT_DINGTOKEN}"
 
-curl "$url" \
+curl -s "$url" \
    -H 'Content-Type: application/json' \
    -d "${INPUT_BODY}"
