@@ -4,7 +4,7 @@ author: 'zcong1993'
 branding:
   icon: 'message-square'
   color: 'blue'
-inputs: 
+inputs:
   dingToken:
     description: 'DingDing bot token'
     required: true
@@ -14,4 +14,4 @@ inputs:
 
 runs:
   using: 'docker'
-  image: 'Dockerfile'
+  image: 'docker://zcong/actions-ding:latest'
