@@ -6,24 +6,16 @@ then
     exit 1
 fi
 
-if [ -z "${INPUT_MESSAGE}" ]
+if [ -z "${INPUT_BODY}" ]
 then
-    echo "message is required!"
+    echo "body is required!"
     exit 1
 fi
 
-url="https://oapi.dingtalk.com/robot/send?access_token=${INPUT_DINGTOKEN}"
+echo "body: $INPUT_BODY"
 
-body=$(cat <<EOF
-{
-    "msgtype": "text", 
-    "text": {
-                "content": "${INPUT_MESSAGE}"
-            }
-}
-EOF
-)
+url="https://oapi.dingtalk.com/robot/send?access_token=${INPUT_DINGTOKEN}"
 
 curl "$url" \
    -H 'Content-Type: application/json' \
-   -d "${body}"
+   -d "${INPUT_BODY}"
