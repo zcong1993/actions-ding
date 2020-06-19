@@ -26,7 +26,7 @@ Send dingding simple notify message.
   uses: zcong1993/actions-ding@master
   with:
     dingToken: ${{ secrets.DING_TOKEN }}
-+   secret: ${{ secrets.DING_SECRET }} # if secret set, action will call API with sign
+    secret: ${{ secrets.DING_SECRET }} # if secret set, action will call API with sign
     body: |
       {
         "msgtype": "link",
