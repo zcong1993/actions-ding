@@ -1,0 +1,42 @@
+{
+  "name": "actions-ding",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Send dingding simple notify message",
+  "scripts": {
+    "build": "tsc",
+    "format": "prettier --write **/*.ts",
+    "format-check": "prettier --check **/*.ts",
+    "lint": "eslint src/**/*.ts",
+    "pack": "ncc build src/index.ts -o dist",
+    "test": "jest",
+    "all": "npm run build && npm run format && npm run lint && npm run pack && npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zcong1993/actions-ding"
+  },
+  "keywords": [
+    "actions",
+    "node",
+    "setup"
+  ],
+  "author": "zcong1993",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.2.4",
+    "axios": "^0.19.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.0",
+    "@types/node": "^14.0.13",
+    "@typescript-eslint/parser": "^3.3.0",
+    "@zeit/ncc": "^0.22.3",
+    "eslint": "^7.2.0",
+    "eslint-plugin-github": "^4.0.1",
+    "eslint-plugin-jest": "^23.13.2",
+    "jest": "^26.0.1",
+    "prettier": "^2.0.5",
+    "typescript": "^3.9.5"
+  }
+}
