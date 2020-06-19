@@ -13,5 +13,5 @@ inputs:
     required: true
 
 runs:
-  using: 'docker'
-  image: 'docker://zcong/actions-ding:latest'
+  using: 'node12'
+  main: 'dist/index.js'
