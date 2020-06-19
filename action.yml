@@ -11,6 +11,9 @@ inputs:
   body:
     description: 'Post Body to send'
     required: true
+  secret:
+    description: 'If use sign secret'
+    required: false
 
 runs:
   using: 'node12'

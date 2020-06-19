@@ -25,7 +25,7 @@
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.2.4",
-    "axios": "^0.19.2"
+    "@zcong/ding-bot": "^0.1.0"
   },
   "devDependencies": {
     "@types/jest": "^26.0.0",

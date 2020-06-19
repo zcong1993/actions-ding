@@ -1,6 +1,6 @@
 dependencies:
   '@actions/core': registry.npmjs.org/@actions/core/1.2.4
-  axios: registry.npmjs.org/axios/0.19.2
+  '@zcong/ding-bot': registry.npmjs.org/@zcong/ding-bot/0.1.0
 devDependencies:
   '@types/jest': registry.npmjs.org/@types/jest/26.0.0
   '@types/node': registry.npmjs.org/@types/node/14.0.13
@@ -1043,6 +1043,16 @@ packages:
       registry: 'https://registry.npmjs.com/'
       tarball: 'https://registry.npmjs.org/@typescript-eslint/typescript-estree/-/typescript-estree-3.3.0.tgz'
     version: 3.3.0
+  registry.npmjs.org/@zcong/ding-bot/0.1.0:
+    dependencies:
+      axios: registry.npmjs.org/axios/0.19.2
+    dev: false
+    name: '@zcong/ding-bot'
+    resolution:
+      integrity: sha512-2T3cPUb1xnOcLMBi6H3hcscleM5E+UoO+Ly0L2EmLpbZUCYcWSfOBUT+wmHCR345h01s8L+YkjGM5hpBjvGBxQ==
+      registry: 'https://registry.npmjs.com/'
+      tarball: 'https://registry.npmjs.org/@zcong/ding-bot/-/ding-bot-0.1.0.tgz'
+    version: 0.1.0
   registry.npmjs.org/@zeit/ncc/0.22.3:
     dev: true
     hasBin: true
@@ -7308,8 +7318,8 @@ specifiers:
   '@types/jest': ^26.0.0
   '@types/node': ^14.0.13
   '@typescript-eslint/parser': ^3.3.0
+  '@zcong/ding-bot': ^0.1.0
   '@zeit/ncc': ^0.22.3
-  axios: ^0.19.2
   eslint: ^7.2.0
   eslint-plugin-github: ^4.0.1
   eslint-plugin-jest: ^23.13.2

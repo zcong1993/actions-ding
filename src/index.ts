@@ -1,25 +1,30 @@
 import * as core from '@actions/core'
-import axios from 'axios'
+import {DingBot} from '@zcong/ding-bot'
 
 const endpoint = 'https://oapi.dingtalk.com/robot/send'
 
 async function run(): Promise<void> {
   try {
-    const token: string = core.getInput('dingToken')
-    const body: string = core.getInput('body')
+    const token = core.getInput('dingToken')
+    const body = core.getInput('body')
+    const secretStr = core.getInput('secret')
+    const secret = secretStr === '' ? undefined : secretStr
+    const data = JSON.parse(body)
+    if (secret) {
+      core.info('get secret, sign mode')
+    }
     core.info(`Send body: ${body}`)
-    try {
-      const resp = await axios({
-        method: 'post',
-        url: `${endpoint}?access_token=${token}`,
-        data: body,
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
+    const dingBot = new DingBot({
+      endpoint,
+      accessToken: token,
+      signKey: secret
+    })
 
-      if (resp.data.errcode !== 0) {
-        core.setFailed(resp.data?.errmsg)
+    try {
+      const resp = await dingBot.rawSend(data)
+
+      if (resp?.errcode !== 0) {
+        core.setFailed(resp?.errmsg)
       }
     } catch (requestErr) {
       core.error(

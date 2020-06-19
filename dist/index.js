@@ -383,35 +383,36 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(116));
-const axios_1 = __importDefault(__webpack_require__(452));
+const ding_bot_1 = __webpack_require__(808);
 const endpoint = 'https://oapi.dingtalk.com/robot/send';
 function run() {
-    var _a, _b, _c;
+    var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const token = core.getInput('dingToken');
             const body = core.getInput('body');
+            const secretStr = core.getInput('secret');
+            const secret = secretStr === '' ? undefined : secretStr;
+            const data = JSON.parse(body);
+            if (secret) {
+                core.info('get secret, sign mode');
+            }
             core.info(`Send body: ${body}`);
+            const dingBot = new ding_bot_1.DingBot({
+                endpoint,
+                accessToken: token,
+                signKey: secret
+            });
             try {
-                const resp = yield axios_1.default({
-                    method: 'post',
-                    url: `${endpoint}?access_token=${token}`,
-                    data: body,
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                if (resp.data.errcode !== 0) {
-                    core.setFailed((_a = resp.data) === null || _a === void 0 ? void 0 : _a.errmsg);
+                const resp = yield dingBot.rawSend(data);
+                if ((resp === null || resp === void 0 ? void 0 : resp.errcode) !== 0) {
+                    core.setFailed(resp === null || resp === void 0 ? void 0 : resp.errmsg);
                 }
             }
             catch (requestErr) {
-                core.error(`send request error, status: ${(_b = requestErr.response) === null || _b === void 0 ? void 0 : _b.status}, data: ${(_c = requestErr.response) === null || _c === void 0 ? void 0 : _c.data}`);
+                core.error(`send request error, status: ${(_a = requestErr.response) === null || _a === void 0 ? void 0 : _a.status}, data: ${(_b = requestErr.response) === null || _b === void 0 ? void 0 : _b.data}`);
                 core.setFailed(requestErr.message);
             }
         }
@@ -651,6 +652,28 @@ function getState(name) {
 }
 exports.getState = getState;
 //# sourceMappingURL=core.js.map
+
+/***/ }),
+
+/***/ 187:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createSign = void 0;
+const crypto_1 = __webpack_require__(417);
+const sha256 = (str, key) => {
+    const h = crypto_1.createHmac('SHA256', key);
+    h.update(str);
+    return h.digest('base64');
+};
+exports.createSign = (key, ts) => {
+    const str = `${ts}\n${key}`;
+    const sign = sha256(str, key);
+    return encodeURIComponent(sign);
+};
+//# sourceMappingURL=sign.js.map
 
 /***/ }),
 
@@ -1664,6 +1687,13 @@ module.exports = require("stream");
 
 /***/ }),
 
+/***/ 417:
+/***/ (function(module) {
+
+module.exports = require("crypto");
+
+/***/ }),
+
 /***/ 419:
 /***/ (function(module, __unusedexports, __webpack_require__) {
 
@@ -2467,6 +2497,67 @@ function coerce(val) {
 /***/ (function(module) {
 
 module.exports = require("zlib");
+
+/***/ }),
+
+/***/ 808:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DingBot = void 0;
+const axios_1 = __webpack_require__(452);
+const sign_1 = __webpack_require__(187);
+const endpoint = 'https://oapi.dingtalk.com/robot/send';
+class DingBot {
+    constructor(options) {
+        this.options = options;
+        if (!this.options.endpoint) {
+            this.options.endpoint = endpoint;
+        }
+    }
+    async sendTextMsg(msg) {
+        return this.send(msg);
+    }
+    async sendLinkMsg(msg) {
+        return this.send(msg);
+    }
+    async sendMarkdownMsg(msg) {
+        return this.send(msg);
+    }
+    async sendActionCardMsg(msg) {
+        return this.send(msg);
+    }
+    async sendFeedCardMsg(msg) {
+        return this.send(msg);
+    }
+    async send(msg) {
+        const data = await this.rawSend(msg);
+        if (data.errcode !== 0) {
+            throw new Error(data.errmsg);
+        }
+    }
+    async rawSend(msg) {
+        const { data } = await axios_1.default.request({
+            method: 'post',
+            url: this.buildUrl(),
+            data: msg,
+        });
+        return data;
+    }
+    buildUrl() {
+        let url = `${endpoint}?access_token=${this.options.accessToken}`;
+        if (this.options.signKey) {
+            const ts = new Date().getTime();
+            const sign = sign_1.createSign(this.options.signKey, ts);
+            url += `&timestamp=${ts}&sign=${sign}`;
+        }
+        return url;
+    }
+}
+exports.DingBot = DingBot;
+//# sourceMappingURL=index.js.map
 
 /***/ }),
 
