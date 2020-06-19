@@ -396,7 +396,7 @@ function run() {
         try {
             const token = core.getInput('dingToken');
             const body = core.getInput('body');
-            core.debug(`Send body: ${body}`);
+            core.info(`Send body: ${body}`);
             try {
                 const resp = yield axios_1.default({
                     method: 'post',

@@ -7,7 +7,7 @@ async function run(): Promise<void> {
   try {
     const token: string = core.getInput('dingToken')
     const body: string = core.getInput('body')
-    core.debug(`Send body: ${body}`)
+    core.info(`Send body: ${body}`)
     try {
       const resp = await axios({
         method: 'post',
