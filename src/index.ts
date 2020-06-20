@@ -8,6 +8,7 @@ async function run(): Promise<void> {
     const token = core.getInput('dingToken')
     const body = core.getInput('body')
     const secretStr = core.getInput('secret')
+    const ignoreError = core.getInput('ignoreError') === 'true'
     const secret = secretStr === '' ? undefined : secretStr
     const data = JSON.parse(body)
     if (secret) {
@@ -24,13 +25,23 @@ async function run(): Promise<void> {
       const resp = await dingBot.rawSend(data)
 
       if (resp?.errcode !== 0) {
-        core.setFailed(resp?.errmsg)
+        if (ignoreError) {
+          core.warning(resp?.errmsg)
+          return
+        } else {
+          core.setFailed(resp?.errmsg)
+        }
       }
     } catch (requestErr) {
       core.error(
         `send request error, status: ${requestErr.response?.status}, data: ${requestErr.response?.data}`
       )
-      core.setFailed(requestErr.message)
+      if (ignoreError) {
+        core.warning(requestErr.message)
+        return
+      } else {
+        core.setFailed(requestErr.message)
+      }
     }
   } catch (error) {
     core.setFailed(error.message)

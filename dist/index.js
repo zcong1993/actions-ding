@@ -394,6 +394,7 @@ function run() {
             const token = core.getInput('dingToken');
             const body = core.getInput('body');
             const secretStr = core.getInput('secret');
+            const ignoreError = core.getInput('ignoreError') === 'true';
             const secret = secretStr === '' ? undefined : secretStr;
             const data = JSON.parse(body);
             if (secret) {
@@ -408,12 +409,24 @@ function run() {
             try {
                 const resp = yield dingBot.rawSend(data);
                 if ((resp === null || resp === void 0 ? void 0 : resp.errcode) !== 0) {
-                    core.setFailed(resp === null || resp === void 0 ? void 0 : resp.errmsg);
+                    if (ignoreError) {
+                        core.warning(resp === null || resp === void 0 ? void 0 : resp.errmsg);
+                        return;
+                    }
+                    else {
+                        core.setFailed(resp === null || resp === void 0 ? void 0 : resp.errmsg);
+                    }
                 }
             }
             catch (requestErr) {
                 core.error(`send request error, status: ${(_a = requestErr.response) === null || _a === void 0 ? void 0 : _a.status}, data: ${(_b = requestErr.response) === null || _b === void 0 ? void 0 : _b.data}`);
-                core.setFailed(requestErr.message);
+                if (ignoreError) {
+                    core.warning(requestErr.message);
+                    return;
+                }
+                else {
+                    core.setFailed(requestErr.message);
+                }
             }
         }
         catch (error) {

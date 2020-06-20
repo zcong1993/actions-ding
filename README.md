@@ -2,6 +2,17 @@
 
 Send dingding simple notify message.
 
+## Usage
+
+| option      | required | description                                                                                                         |
+| ----------- | -------- | ------------------------------------------------------------------------------------------------------------------- |
+| dingToken   | true     | DingDing bot access_token                                                                                           |
+| body        | true     | any kind of message body [dingding](https://ding-doc.dingtalk.com/doc#/serverapi2/qf2nxq) support into `body` field |
+| secret      | false    | if secret set, action will call API with sign                                                                       |
+| ignoreError | false    | if set true, will not fail action when API call failed                                                              |
+
+## Examples
+
 ```yaml
 - name: Send dingding notify
   uses: zcong1993/actions-ding@master
@@ -19,7 +30,7 @@ Send dingding simple notify message.
       }
 ```
 
-## sign
+### with sign
 
 ```yaml
 - name: Send dingding notify

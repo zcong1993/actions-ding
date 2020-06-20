@@ -14,6 +14,9 @@ inputs:
   secret:
     description: 'If use sign secret'
     required: false
+  ignoreError:
+    description: 'If set true, will not fail action when API call failed'
+    required: false
 
 runs:
   using: 'node12'
