@@ -10,7 +10,6 @@ async function run(): Promise<void> {
     const secretStr = core.getInput('secret')
     const ignoreError = core.getInput('ignoreError') === 'true'
     const secret = secretStr === '' ? undefined : secretStr
-    const data = JSON.parse(body)
     if (secret) {
       core.info('get secret, sign mode')
     }
@@ -22,7 +21,7 @@ async function run(): Promise<void> {
     })
 
     try {
-      const resp = await dingBot.rawSend(data)
+      const resp = await dingBot.rawSend(body)
 
       if (resp?.errcode !== 0) {
         if (ignoreError) {
