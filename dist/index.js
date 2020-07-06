@@ -385,7 +385,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(116));
-const ding_bot_1 = __webpack_require__(808);
+const ding_bot_1 = __webpack_require__(574);
 const endpoint = 'https://oapi.dingtalk.com/robot/send';
 function run() {
     var _a, _b;
@@ -396,7 +396,6 @@ function run() {
             const secretStr = core.getInput('secret');
             const ignoreError = core.getInput('ignoreError') === 'true';
             const secret = secretStr === '' ? undefined : secretStr;
-            const data = JSON.parse(body);
             if (secret) {
                 core.info('get secret, sign mode');
             }
@@ -407,7 +406,7 @@ function run() {
                 signKey: secret
             });
             try {
-                const resp = yield dingBot.rawSend(data);
+                const resp = yield dingBot.rawSend(body);
                 if ((resp === null || resp === void 0 ? void 0 : resp.errcode) !== 0) {
                     if (ignoreError) {
                         core.warning(resp === null || resp === void 0 ? void 0 : resp.errmsg);
@@ -665,28 +664,6 @@ function getState(name) {
 }
 exports.getState = getState;
 //# sourceMappingURL=core.js.map
-
-/***/ }),
-
-/***/ 187:
-/***/ (function(__unusedmodule, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.createSign = void 0;
-const crypto_1 = __webpack_require__(417);
-const sha256 = (str, key) => {
-    const h = crypto_1.createHmac('SHA256', key);
-    h.update(str);
-    return h.digest('base64');
-};
-exports.createSign = (key, ts) => {
-    const str = `${ts}\n${key}`;
-    const sign = sha256(str, key);
-    return encodeURIComponent(sign);
-};
-//# sourceMappingURL=sign.js.map
 
 /***/ }),
 
@@ -1553,6 +1530,28 @@ module.exports = function parseHeaders(headers) {
 
 /***/ }),
 
+/***/ 363:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createSign = void 0;
+const crypto_1 = __webpack_require__(417);
+const sha256 = (str, key) => {
+    const h = crypto_1.createHmac('SHA256', key);
+    h.update(str);
+    return h.digest('base64');
+};
+exports.createSign = (key, ts) => {
+    const str = `${ts}\n${key}`;
+    const sign = sha256(str, key);
+    return encodeURIComponent(sign);
+};
+//# sourceMappingURL=sign.js.map
+
+/***/ }),
+
 /***/ 402:
 /***/ (function(module, __unusedexports, __webpack_require__) {
 
@@ -2209,6 +2208,70 @@ module.exports = function isCancel(value) {
 
 /***/ }),
 
+/***/ 574:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DingBot = void 0;
+const axios_1 = __webpack_require__(452);
+const sign_1 = __webpack_require__(363);
+const endpoint = 'https://oapi.dingtalk.com/robot/send';
+class DingBot {
+    constructor(options) {
+        this.options = options;
+        if (!this.options.endpoint) {
+            this.options.endpoint = endpoint;
+        }
+    }
+    async sendTextMsg(msg) {
+        return this.send(msg);
+    }
+    async sendLinkMsg(msg) {
+        return this.send(msg);
+    }
+    async sendMarkdownMsg(msg) {
+        return this.send(msg);
+    }
+    async sendActionCardMsg(msg) {
+        return this.send(msg);
+    }
+    async sendFeedCardMsg(msg) {
+        return this.send(msg);
+    }
+    async send(msg) {
+        const data = await this.rawSend(msg);
+        if (data.errcode !== 0) {
+            throw new Error(data.errmsg);
+        }
+    }
+    async rawSend(msg) {
+        const { data } = await axios_1.default.request({
+            method: 'post',
+            url: this.buildUrl(),
+            data: msg,
+            headers: {
+                'content-type': 'application/json',
+            },
+        });
+        return data;
+    }
+    buildUrl() {
+        let url = `${endpoint}?access_token=${this.options.accessToken}`;
+        if (this.options.signKey) {
+            const ts = new Date().getTime();
+            const sign = sign_1.createSign(this.options.signKey, ts);
+            url += `&timestamp=${ts}&sign=${sign}`;
+        }
+        return url;
+    }
+}
+exports.DingBot = DingBot;
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
 /***/ 605:
 /***/ (function(module) {
 
@@ -2510,67 +2573,6 @@ function coerce(val) {
 /***/ (function(module) {
 
 module.exports = require("zlib");
-
-/***/ }),
-
-/***/ 808:
-/***/ (function(__unusedmodule, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.DingBot = void 0;
-const axios_1 = __webpack_require__(452);
-const sign_1 = __webpack_require__(187);
-const endpoint = 'https://oapi.dingtalk.com/robot/send';
-class DingBot {
-    constructor(options) {
-        this.options = options;
-        if (!this.options.endpoint) {
-            this.options.endpoint = endpoint;
-        }
-    }
-    async sendTextMsg(msg) {
-        return this.send(msg);
-    }
-    async sendLinkMsg(msg) {
-        return this.send(msg);
-    }
-    async sendMarkdownMsg(msg) {
-        return this.send(msg);
-    }
-    async sendActionCardMsg(msg) {
-        return this.send(msg);
-    }
-    async sendFeedCardMsg(msg) {
-        return this.send(msg);
-    }
-    async send(msg) {
-        const data = await this.rawSend(msg);
-        if (data.errcode !== 0) {
-            throw new Error(data.errmsg);
-        }
-    }
-    async rawSend(msg) {
-        const { data } = await axios_1.default.request({
-            method: 'post',
-            url: this.buildUrl(),
-            data: msg,
-        });
-        return data;
-    }
-    buildUrl() {
-        let url = `${endpoint}?access_token=${this.options.accessToken}`;
-        if (this.options.signKey) {
-            const ts = new Date().getTime();
-            const sign = sign_1.createSign(this.options.signKey, ts);
-            url += `&timestamp=${ts}&sign=${sign}`;
-        }
-        return url;
-    }
-}
-exports.DingBot = DingBot;
-//# sourceMappingURL=index.js.map
 
 /***/ }),
 
