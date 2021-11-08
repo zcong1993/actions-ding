@@ -1,4 +1,4 @@
-# DingDing Notify Action
+# DingDing Notify Action [![Test](https://github.com/zcong1993/actions-ding/actions/workflows/test.yml/badge.svg)](https://github.com/zcong1993/actions-ding/actions/workflows/test.yml)
 
 Send dingding simple notify message.
 
