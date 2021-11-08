@@ -31,7 +31,7 @@ async function run(): Promise<void> {
           core.setFailed(resp?.errmsg)
         }
       }
-    } catch (requestErr) {
+    } catch (requestErr: any) {
       core.error(
         `send request error, status: ${requestErr.response?.status}, data: ${requestErr.response?.data}`
       )
@@ -42,7 +42,7 @@ async function run(): Promise<void> {
         core.setFailed(requestErr.message)
       }
     }
-  } catch (error) {
+  } catch (error: any) {
     core.setFailed(error.message)
   }
 }

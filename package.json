@@ -8,9 +8,9 @@
     "format": "prettier --write **/*.ts",
     "format-check": "prettier --check **/*.ts",
     "lint": "eslint src/**/*.ts",
-    "pack": "ncc build src/index.ts -o dist",
+    "package": "ncc build src/index.ts -o dist",
     "test": "jest",
-    "all": "npm run build && npm run format && npm run lint && npm run pack && npm test"
+    "all": "npm run build && npm run format && npm run lint && npm run package && npm test"
   },
   "repository": {
     "type": "git",
@@ -24,19 +24,19 @@
   "author": "zcong1993",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.2.4",
-    "@zcong/ding-bot": "^0.1.1"
+    "@actions/core": "^1.6.0",
+    "@zcong/ding-bot": "^0.1.2"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.0",
-    "@types/node": "^14.0.13",
-    "@typescript-eslint/parser": "^3.3.0",
-    "@zeit/ncc": "^0.22.3",
-    "eslint": "^7.2.0",
-    "eslint-plugin-github": "^4.0.1",
-    "eslint-plugin-jest": "^23.13.2",
-    "jest": "^26.0.1",
-    "prettier": "^2.0.5",
-    "typescript": "^3.9.5"
+    "@types/jest": "^27.0.2",
+    "@types/node": "^16.11.6",
+    "@typescript-eslint/parser": "^5.3.0",
+    "@vercel/ncc": "^0.31.1",
+    "eslint": "^8.2.0",
+    "eslint-plugin-github": "^4.3.3",
+    "eslint-plugin-jest": "^25.2.3",
+    "jest": "^27.3.1",
+    "prettier": "^2.4.1",
+    "typescript": "^4.4.4"
   }
 }
