@@ -1,0 +1,57 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  Build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Private Actions Checkout
+        uses: actions/checkout@v2
+      ### show time now
+      ####
+      ####
+      -
+        name: Get Data 
+        id: getDingData
+        run: |
+          # 输出仓库名
+          REPOSITORY="${{GITHUB.REPOSITORY}}"
+          echo "::set-output name=REPOSITORY::${REPOSITORY#*/}"
+          
+          # 获取用户仓库信息
+          RESPONSE="$(curl -sLm 10 https://api.github.com/repos/${{ GITHUB.REPOSITORY }})"
+          # 建议填写自己的 TOKEN
+          # RESPONSE="$(curl -sLm 10 https://api.github.com/repos/${{ GITHUB.REPOSITORY }} -H "Authorization: token ${{ SECRETS.TOKEN_GITHUB }}")"
+          
+          # 获取 用户仓库 设置的 描述，如果为空，可能是没有使用 TOKEN
+          DESCRIPTION="$(jq -r .description <(echo ${RESPONSE}))"
+          echo "::set-output name=DESCRIPTION::${DESCRIPTION}"
+
+          # 获取 用户仓库 设置的 URL, 如果没有就输出 Github 地址
+          URL="$(jq -r .homepage <(echo ${RESPONSE}))"
+          if [ -n "${URL}" ]; then
+            echo "::set-output name=URL::${URL}"
+          else
+            echo "::set-output name=URL::${{ GITHUB.SERVER_URL }}/${{ GITHUB.REPOSITORY }}"
+          fi
+      - 
+        name: Send dingding notify
+        uses: zcong1993/actions-ding@master
+        with:
+          dingToken: ${{ SECRETS.DING_TOKEN }}
+          secret: ${{ SECRETS.DING_SECRET }}
+          body: |
+            {
+              "msgtype": "link",
+              "link": {
+                  "text": "${{ steps.getDingData.outputs.DESCRIPTION }}",
+                  "title":  "${{ steps.getDingData.outputs.REPOSITORY }} WorkFlow ${{ GITHUB.JOB }} Success!",
+                  "picUrl": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
+                  "messageUrl": "${{ steps.getDingData.outputs.URL }}"
+              }
+            }
