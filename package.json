@@ -24,7 +24,7 @@
   "author": "zcong1993",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.6.0",
+    "@actions/core": "^1.9.1",
     "@zcong/ding-bot": "^0.1.3"
   },
   "devDependencies": {
